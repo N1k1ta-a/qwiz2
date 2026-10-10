@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Для Варюши</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(160deg, #fff5f0 0%, #ffe8e0 40%, #ffd6cc 100%);
+            color: #4a3b35;
+            font-family: 'Georgia', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 620px;
+            width: 100%;
+            text-align: center;
+            padding: 45px 30px;
+            background: rgba(255, 255, 255, 0.65);
+            border-radius: 28px;
+            box-shadow: 
+                0 20px 60px rgba(255, 150, 130, 0.25),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 420px;
+            transition: all 0.4s ease;
+        }
+
+        .question {
+            font-size: 20px;
+            line-height: 1.7;
+            margin-bottom: 30px;
+            color: #5a453d;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .question.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .options.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.7);
+            color: #5a453d;
+            border: 1.5px solid rgba(255, 160, 140, 0.4);
+            padding: 16px 24px;
+            border-radius: 18px;
+            font-size: 16px;
+            font-family: 'Georgia', serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            line-height: 1.5;
+            box-shadow: 0 2px 8px rgba(255, 160, 140, 0.1);
+        }
+
+        .option-btn:hover {
+            background: rgba(255, 230, 220, 0.9);
+            border-color: rgba(255, 130, 110, 0.7);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(255, 150, 130, 0.25);
+        }
+
+        .option-btn:active {
+            transform: scale(0.98);
+        }
+
+        .option-btn.selected {
+            background: linear-gradient(135deg, #ffcdb8, #ffb3a0);
+            border-color: #ff9e85;
+            color: #4a3b35;
+            font-weight: 600;
+        }
+
+        .final-message {
+            display: none;
+            text-align: left;
+            font-size: 17px;
+            line-height: 1.9;
+            color: #4a3b35;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 1s ease, transform 1s ease;
+            padding: 10px 5px;
+            border-left: 3px solid rgba(255, 130, 110, 0.5);
+            padding-left: 22px;
+        }
+
+        .final-message.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .final-message p {
+            margin-bottom: 16px;
+        }
+
+        .heart-container {
+            display: none;
+            margin-top: 30px;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        .heart-container.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .heart {
+            color: #ff7a5c;
+            font-size: 50px;
+            display: inline-block;
+            animation: pulse 1.8s infinite;
+            filter: drop-shadow(0 0 18px rgba(255, 122, 92, 0.5));
+        }
+
+        .final-text {
+            margin-top: 12px;
+            font-size: 14px;
+            color: #a08070;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-family: 'Georgia', serif;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255, 180, 150, 0.6), rgba(255, 200, 170, 0));
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 18s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+
+        .progress {
+            font-size: 13px;
+            color: #b09080;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .progress.active {
+            opacity: 1;
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 35px 22px; min-height: 380px; }
+            .question { font-size: 18px; }
+            .option-btn { font-size: 15px; padding: 14px 20px; }
+            .final-message { font-size: 15px; padding-left: 18px; }
+            .heart { font-size: 42px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="container">
+        <div class="progress" id="progress"></div>
+    </div>
+
+    <script>
+        function createParticles() {
+            const body = document.body;
+            const colors = [
+                'rgba(255, 200, 170, 0.5)',
+                'rgba(255, 180, 150, 0.4)',
+                'rgba(255, 220, 190, 0.6)',
+                'rgba(255, 160, 130, 0.35)'
+            ];
+            for (let i = 0; i < 25; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                const size = Math.random() * 30 + 10;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 12 + 12) + 's';
+                particle.style.animationDelay = Math.random() * 12 + 's';
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                body.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        const quiz = [
+            {
+                question: "Варюша, как ты сейчас?",
+                options: [
+                    "Устала. Просто хочу тишины.",
+                    "Злюсь на всё и на всех.",
+                    "Не знаю. Внутри пусто.",
+                    "Хочу, чтобы меня оставили в покое."
+                ]
+            },
+            {
+                question: "Что тебе сейчас нужнее всего?",
+                options: [
+                    "Чтобы никто не трогал.",
+                    "Время подумать одной.",
+                    "Просто выдохнуть.",
+                    "Не знаю. Ничего не хочу."
+                ]
+            },
+            {
+                question: "Варюша, можно я скажу тебе кое-что важное?",
+                options: [
+                    "Давай.",
+                    "Только недолго.",
+                    "Я слушаю.",
+                    "Хорошо."
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        const container = document.getElementById('container');
+        const progress = document.getElementById('progress');
+
+        function renderQuestion(index) {
+            container.innerHTML = '';
+            container.appendChild(progress);
+
+            if (index >= quiz.length) {
+                showFinal();
+                return;
+            }
+
+            progress.textContent = `Вопрос ${index + 1} из ${quiz.length}`;
+            progress.classList.add('active');
+
+            const q = quiz[index];
+
+            const questionDiv = document.createElement('div');
+            questionDiv.classList.add('question', 'active');
+            questionDiv.textContent = q.question;
+            container.appendChild(questionDiv);
+
+            const optionsDiv = document.createElement('div');
+            optionsDiv.classList.add('options', 'active');
+
+            q.options.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.classList.add('option-btn');
+                btn.textContent = opt;
+                btn.addEventListener('click', () => {
+                    btn.classList.add('selected');
+                    setTimeout(() => {
+                        currentQuestion++;
+                        renderQuestion(currentQuestion);
+                    }, 400);
+                });
+                optionsDiv.appendChild(btn);
+            });
+
+            container.appendChild(optionsDiv);
+        }
+
+        function showFinal() {
+            progress.classList.remove('active');
+            container.innerHTML = '';
+            
+            const finalDiv = document.createElement('div');
+            finalDiv.classList.add('final-message');
+            finalDiv.innerHTML = `
+                <p>Варюша, я не знаю, что сказать, чтобы ты услышала. Но я попробую так.</p>
+                <p>Ты сейчас, наверное, устала. Или злишься. Или просто хочешь, чтобы всё исчезло. Я понимаю.</p>
+                <p>Я не буду пробиваться через блокировки. Не буду писать с других аккаунтов. Я уважаю твоё «уйди».</p>
+                <p>Но я хочу, чтобы ты знала одну простую вещь.</p>
+                <p><strong>Я не ушёл. Я не обижаюсь. Я не держу зла.</strong></p>
+                <p>Я просто люблю тебя. Тихо. Без условий. Без требований.</p>
+                <p>Когда ты выдохнешь и захочешь — я буду здесь.</p>
+                <p>Береги себя, Варюша. Правда.</p>
+            `;
+            container.appendChild(finalDiv);
+
+            setTimeout(() => {
+                finalDiv.classList.add('active');
+            }, 100);
+
+            const heartContainer = document.createElement('div');
+            heartContainer.classList.add('heart-container');
+            heartContainer.innerHTML = `
+                <div class="heart">❤</div>
+                <div class="final-text">Я рядом, Варюша</div>
+            `;
+            container.appendChild(heartContainer);
+
+            setTimeout(() => {
+                heartContainer.classList.add('active');
+            }, 1200);
+        }
+
+        renderQuestion(0);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
